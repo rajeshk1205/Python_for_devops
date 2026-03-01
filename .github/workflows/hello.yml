@@ -1,0 +1,11 @@
+---
+name: hello
+run:
+  push:
+    branches:
+      - main
+    greet:
+      run-on: ubunutu-lst
+      steps:
+        -name: say hello to the users
+        run: echo "hello $user"
