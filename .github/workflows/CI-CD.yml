@@ -1,0 +1,35 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # this is job 1
+  Get_code_from_git:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the update code form github
+        run: echo "Git pull origin main"
+      - name: updated code pulled successfully
+        run: echo "update code rececive"
+
+  build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Build code code
+          run: docker build  
+          
+  build_test:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Build the test
+          run: docker test
+
+  release:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Release the changes
+          run: docker run
+     
