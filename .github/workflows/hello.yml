@@ -6,6 +6,7 @@ on:
       - main
 
 jobs:
+  # this is job 1
   greet:
     runs-on: ubuntu-latest
     steps:
@@ -13,3 +14,12 @@ jobs:
         run: echo "Hello Raj"
       - name: Say hello to username
         run: echo "Hello $USER"
+  
+  # this is job 2
+  check_version:
+      runs-on: ubuntu-latest
+      steps:
+        - name: check python and docker version
+          run: python --version &&  docker --version
+
+    
