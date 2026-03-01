@@ -6,30 +6,39 @@ on:
       - main
 
 jobs:
-  # this is job 1
+  # Job 1 — Get code from GitHub
   Get_code_from_git:
     runs-on: ubuntu-latest
     steps:
-      - name: Get the update code form github
-        run: echo "Git pull origin main"
-      - name: updated code pulled successfully
-        run: echo "update code rececive"
+      - name: Get the updated code from GitHub
+        uses: actions/checkout@v3         # ✅ Real way to pull code in GitHub Actions
 
+      - name: Updated code pulled successfully
+        run: echo "Updated code received successfully"
+
+  # Job 2 — Build Docker Image
   build:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Build code code
-          run: docker build  
-          
-  build_test:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Build the test
-          run: docker test
+    needs: Get_code_from_git             # ✅ Runs only after job 1 completes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build -t my-app:latest .   # ✅ Added image tag and build context
 
+  # Job 3 — Test the build
+  build_test:
+    needs: build                         # ✅ Runs only after job 2 completes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests inside container
+        run: docker run my-app:latest pytest   # ✅ docker test doesn't exist — use docker run
+
+  # Job 4 — Release / Deploy
   release:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Release the changes
-          run: docker run
-     
+    needs: build_test                    # ✅ Runs only after job 3 completes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Release the changes
+        run: docker run -d -p 80:80 my-app:latest  # ✅ Added image name, detached flag & port
